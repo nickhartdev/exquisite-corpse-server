@@ -1,15 +1,16 @@
-// Update with your config settings.
+require('dotenv').config()
+
 
 module.exports = {
-
   development: {
-    client: 'pg',
-    connection: 'postgres://localhost/test',
+    client: "pg",
+    connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
+    //environmental variables - dotenv // library for managing variables
     migrations: {
-      directory: './db/migrations'
+      directory: "./db/migrations",
     },
-    useNullAsDefault: true
-  }
+    useNullAsDefault: true,
+  },
 
   // staging: {
   //   client: 'postgresql',
@@ -42,5 +43,4 @@ module.exports = {
   //     tableName: 'knex_migrations'
   //   }
   // }
-
 };
