@@ -14,6 +14,15 @@ app.use(cors())
 
 app.set('port', process.env.PORT || 3005)
 
+app.get('/authors', async(request, response) => {
+  try {
+    knex.select().from("authors")
+      .then((authors) => response.status(200).json(authors))
+  } catch (error) {
+    console.error(error.message)
+  }
+})
+
 app.post('/authors', async(request, response) => {
   const author = request.body
   const requiredKeys = ['name', 'email']
@@ -26,7 +35,7 @@ app.post('/authors', async(request, response) => {
     }
   } else {
     //return an error message
-    response(422).json(`You don't got the right info`)
+    response.status(422).json(`You don't got the right info`)
   }
 })
 
