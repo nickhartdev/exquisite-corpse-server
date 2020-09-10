@@ -5,7 +5,7 @@ exports.up = function(knex) {
       table.increments('id').primary()
       table.string('title')
       table.string('story')
-      table.string('prompt')
+      table.foreign('prompt').references('prompts.id')
       table.timestamps(true, true)
     })
     .createTable('prompts', function(table) {
@@ -17,11 +17,14 @@ exports.up = function(knex) {
       table.increments('id').primary()
       table.string('name')
       table.string('email')
+      table.string('password')
       table.timestamps(true, true)
     })
     .createTable('story_authors', function(table) {
-      table.foreign('story_id')
-      table.foreign('author_id')
+      table.integer('story_id')
+      table.foreign('story_id').references('stories.id')
+      table.integer('author_id')
+      table.foreign('author_id').references('authors.id')
       table.timestamps(true, true)
     })
 };
