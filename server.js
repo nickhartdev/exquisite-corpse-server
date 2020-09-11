@@ -14,7 +14,7 @@ app.use(cors())
 
 app.set('port', process.env.PORT || 3005)
 
-app.get('/authors', async(request, response) => {
+app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from("authors")
       .then((authors) => response.status(200).json(authors))
@@ -23,21 +23,31 @@ app.get('/authors', async(request, response) => {
   }
 })
 
-app.post('/authors', async(request, response) => {
-  const author = request.body
-  const requiredKeys = ['name', 'email']
-  if (requiredKeys.every(value => Object.keys(author).includes(value))) {
+app.get("/api/v1/prompts", async (request, response) => {
+  try {
+    knex.select().from("prompts")
+      .then((prompts) => response.status(200).json(prompts));
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
+app.post("/api/v1/authors", async (request, response) => {
+  const author = request.body;
+  const requiredKeys = ["name", "email"];
+  if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
-      knex('authors').insert({ name: author.name, email: author.email })
-        .then((response) => console.log(response))
+      knex("authors")
+        .insert({ name: author.name, email: author.email, password: author.password })
+        .then((response) => console.log(response));
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
   } else {
     //return an error message
-    response.status(422).json(`You don't got the right info`)
+    response.status(422).json(`You don't got the right info`);
   }
-})
+});
 
 app.listen(app.get('port'), () => {
   console.log(`This server is running on http://localhost:${app.get('port')}`)
