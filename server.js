@@ -30,7 +30,24 @@ app.get("/api/v1/prompts", async (request, response) => {
   } catch (error) {
     console.error(error.message);
   }
-});
+});  
+
+app.get('/api/v1/prompts/:genre', async (request, response) => {
+  try {
+    knex('prompts')
+      .groupBy('id')
+      .select()
+      .having('genre', '=', request.params.genre)
+      .then(promptData => {
+        const allPrompts = response.json(promptData)
+        const randomIndex = Math.round(Math.random() * allPrompts.length)
+
+        return allPrompts[randomIndex]
+      })
+  } catch (error) {
+    console.error(error.message)
+  }
+})
 
 app.post("/api/v1/authors", async (request, response) => {
   const author = request.body
