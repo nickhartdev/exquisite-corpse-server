@@ -13,6 +13,8 @@ app.use(express.json())
 app.use(cors())
 
 app.set('port', process.env.PORT || 3005)
+app.locals.title = "The Exquisite Corpse server"
+
 //AUTHORS AND USERS
 app.get('/api/v1/authors', async(request, response) => {
   try {
@@ -43,8 +45,7 @@ app.post('/api/v1/authors', async (request, response) => {
     response.status(422).json(`You don't got the right info`)
   }
 });
-// ALL PROMPTS
-
+// PROMPTS
 const promptGenerator = (request) => {
   try {
     const genre = request.params.genre;
@@ -83,34 +84,7 @@ app.get('/api/v1/prompts/:genre', async(request, response) =>  {
     console.error(error);
   }
 })  
-
-
-
-// app.get('/api/v1/prompts/:genre', async (request, response) => {
-// try {
-//   const genre = request.params.genre
-//   let allPrompts;
-//   if (genre) {
-//     allPrompts = knex("prompts")
-//     .groupBy("id")
-//     .select()
-//     .having("genre", "=", request.params.genre)
-//     .then((hi) => console.log(hi))
-//   } else {
-//     allPrompts = knex('prompts')
-//       .select()
-//   }
-//     allPrompts.then((promptData) => {
-//       const allPrompts = response.json(promptData);
-//       const randomIndex = Math.round(Math.random() * allPrompts.length);
-
-//       return allPrompts[randomIndex];
-//     });
-// } catch (error) {
-//   console.error(error.message);
-// }
-// })
-
+//STORIES
 app.get('/api/v1/stories', (request, response) => {
   try {
     knex('stories')
@@ -157,5 +131,5 @@ app.post('/api/v1/stories', (request, response) => {
 })
 
 app.listen(app.get('port'), () => {
-  console.log(`This server is running on http://localhost:${app.get('port')}`)
+  console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}`)
 })
