@@ -154,6 +154,56 @@ exports.seed = function(knex) {
           prompt: "After a long and bloody battle, both the hero and villain are going to die of their wounds. As the sit across from each other, leaning on rubble, the villain pulls out a flask of whiskey and has a heart-felt last talk with the hero, before they both die of blood loss.",
           genre: "superhero",
         },
+        {
+          id: 31,
+          prompt: "You reach the afterlife, but before you find out where you'll end up, you have to watch the entire life of someone and decide where they should go. What you don't know is all of your memories have been wiped and it's your own life you're watching.",
+          genre: "existential",
+        },
+        {
+          id: 32,
+          prompt: "A group of friends playing Dungeons & Dragons attempt to use the game to subtly stage an intervention for one of the players.",
+          genre: "fantasy",
+        },
+        {
+          id: 33,
+          prompt: "Torture was never invented. Countries instead spoil prisoners like kings to get information out of them. You are an instructor tasked with training spies to resist the enemy's kindness.",
+          genre: "absurd",
+        },
+        {
+          id: 34,
+          prompt: "In an effort to protect your innocence when you were young, your parents told you that heroin, cocaine, etc. were just flavors of ice cream. Now you're a notorious drug trafficker rising through the ranks of a cartel, but no one has ever corrected your understanding of what the product is.",
+          genre: "absurd",
+        },
+        {
+          id: 35,
+          prompt: "\"I never said she stole my money\" - This sentence has 7 different meanings depending on the stressed word. How much of them can be put in a story?",
+          genre: "writing challenge",
+        },
+        {
+          id: 36,
+          prompt: "At a regular high school, every student coincidentally happens to be a superhero. Thus far, every student has managed to keep their secret identity a secret. When a supervillain attacks the school, each student believes he/she is the target and tries to maintain his/her secret identity.",
+          genre: "superhero",
+        },
+        {
+          id: 37,
+          prompt: "You were murdered. But to your surprise, you're reincarnated into the body of a recently born infant. Looking around, you realize that you're at your own funeral, and your eulogy is being given by none other than your murderer.",
+          genre: "murder",
+        },
+        {
+          id: 38,
+          prompt: "You are the founder of a tiny 1990s tech startup operating from your garage. All of a sudden, a bunch of people who are obviously badly disguised time travelers start trying to buy stock in your company.",
+          genre: "science fiction",
+        },
+        {
+          id: 39,
+          prompt: "The universe was a program running in a giant computer, and animal sacrifices by early civilizations were simply a misunderstanding of the computer requiring \"more RAM\"",
+          genre: "science fiction",
+        },
+        {
+          id: 40,
+          prompt: "Killing Hitler has become a sport amongst time travelers. Points are awarded for creativity and difficulty. You are last year's champion, how did you win?",
+          genre: "murder",
+        },
 
       ]);
     });
