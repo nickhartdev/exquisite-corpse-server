@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config()
 
 import express from 'express'
 import cors from 'cors'
@@ -16,19 +16,19 @@ app.set('port', process.env.PORT || 3005)
 
 app.get('/api/v1/authors', async(request, response) => {
   try {
-    knex.select().from("authors")
+    knex.select().from('authors')
       .then((authors) => response.status(200).json(authors))
   } catch (error) {
     console.error(error.message)
   }
 })
 
-app.get("/api/v1/prompts", async (request, response) => {
+app.get('/api/v1/prompts', async (request, response) => {
   try {
-    knex.select().from("prompts")
+    knex.select().from('prompts')
       .then((prompts) => response.status(200).json(prompts));
   } catch (error) {
-    console.error(error.message);
+    console.error(error.message)
   }
 });  
 
@@ -49,23 +49,23 @@ app.get('/api/v1/prompts/:genre', async (request, response) => {
   }
 })
 
-app.post("/api/v1/authors", async (request, response) => {
+app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
-  const requiredKeys = ["name", "email"];
+  const requiredKeys = ['name', 'email']
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
-      knex("authors")
+      knex('authors')
         .insert({ 
           name: author.name, 
           email: author.email, 
           password: author.password 
         })
-        .then((response) => console.log(response));
+        .then((response) => console.log(response))
     } catch (error) {
-      console.error(error.message);
+      console.error(error.message)
     }
   } else {
-    response.status(422).json(`You don't got the right info`);
+    response.status(422).json(`You don't got the right info`)
   }
 });
 
@@ -83,19 +83,19 @@ app.get('/api/v1/stories/:id', (request, response) => {
   }
 })
 
-app.post("/api/v1/stories", (request, response) => {
+app.post('/api/v1/stories', (request, response) => {
   const storyInfo = request.body
   const requiredKeys = ['title', 'story', 'prompt']
 
   if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
     try {
-      knex("stories")
+      knex('stories')
         .insert({ 
           title: storyInfo.title, 
           story: storyInfo.story, 
           prompt: storyInfo.prompt 
         })
-        .then(response => console.log(response));
+        .then(response => console.log(response))
     } catch (error) {
       console.error(error.message)
     }
