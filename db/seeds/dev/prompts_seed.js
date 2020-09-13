@@ -204,6 +204,56 @@ exports.seed = function(knex) {
           prompt: "Killing Hitler has become a sport amongst time travelers. Points are awarded for creativity and difficulty. You are last year's champion, how did you win?",
           genre: "murder",
         },
+        {
+          id: 41,
+          prompt: "The main character slowly falls in love with the reader, the last line is \"please don't close the page, I don't want to die\"",
+          genre: "existential",
+        },
+        {
+          id: 42,
+          prompt: "You graduated from innuendo school with perfect grades. Your teacher asks you to write an example essay for the incoming freshman explaining what it's like.",
+          genre: "writing challenge",
+        },
+        {
+          id: 43,
+          prompt: "You somehow end up dating death. However, you have to deal with God and The Devil being overprotective older siblings.",
+          genre: "satire",
+        },
+        {
+          id: 44,
+          prompt: "Valhalla is filled with the strongest warriors the world has ever known. Vikings, Spartans, Mongols, Romans, Samurai, Spetznaz, JSOC Operators. And in that corner over there? That's Ted, from accounting.",
+          genre: "absurd",
+        },
+        {
+          id: 45,
+          prompt: "The zombie apocalypse breaks out. You remain safe in isolation for 30+ years. Someone finds you and informs you the zombie apocalypse ended 20 years ago.",
+          genre: "dystopian",
+        },
+        {
+          id: 46,
+          prompt: "Write a version of Fifty Shades Of Gray where all the main characters are fish - \"Fishy Shades of Gray\"",
+          genre: "romance",
+        },
+        {
+          id: 47,
+          prompt: "The last person on Earth is essentially turning off the lights before they leave.",
+          genre: "existential",
+        },
+        {
+          id: 48,
+          prompt: "You sold your soul to the Devil some years ago. Today he gives it back and says, \"I need a favor...\"",
+          genre: "existential",
+        },
+        {
+          id: 49,
+          prompt: "Metaphorical \"burns\" can now cause physical damage. Tell the tale of an assassin who specializes in death by conversational incineration.",
+          genre: "superhero",
+        },
+        {
+          id: 50,
+          prompt: "Write a gruesome story using only euphemisms so than it can be read to a group of children without frightening them",
+          genre: "writing challenge",
+        },
 
       ]);
     });
