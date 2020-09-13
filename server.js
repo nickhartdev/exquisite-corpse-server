@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-import express from 'express'
+import express, { response } from 'express'
 import cors from 'cors'
 
 const app = express()
@@ -70,22 +70,51 @@ const checkLoginInfo = (info) => {
   return result
 }
 
-// app.post('/api/v1/authors/login', async (request, response) => {
-//   const login = checkLoginInfo(request.body)
-//   if (login.hasEnoughInfo) {
-//     try {
-//       knex('authors')
-//         .groupBy('id')
-//         .select()
-//         .having(login.userType, '=', response.body[userType])
-//         .then(user => response.status(200).json(user))
-//     } catch (error) {
-//       console.error(error.message)
-//     }
-//   } else {
-//     response.status(422).json(login.message)
-//   }
-// })
+const makeSecureUserResponse = ({ id, name, email, bio, created_at, updated_at}) =>{
+  return {
+    id: id,
+    name: name,
+    email: email,
+    bio: bio,
+    created_at: created_at,
+    updated_at: updated_at
+  }
+}
+
+const authenticateUser = (userAccount, attemptedPassword, response) => {
+  try {
+    if (userAccount[0].password === attemptedPassword) {
+      return response.status(200).json(makeSecureUserResponse(userAccount[0]))
+    } else {
+      return response.status(422).json('An incorrect password was provided!')
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
+}
+
+app.post('/api/v1/authors/login', async (request, response) => {
+  const login = checkLoginInfo(request.body)
+  if (login.hasEnoughInfo) {
+    try {
+      knex('authors')
+        .groupBy('id')
+        .select()
+        .having(login.userType, '=', request.body[login.userType])
+        .then(user => {
+          if (user.length === 0) {
+            return response.status(422).json('A user by that name was not found')
+          } else {
+            return authenticateUser(user, request.body.password, response)
+          }
+        })
+    } catch (error) {
+      console.error(error.message)
+    }
+  } else {
+    response.status(422).json(login.message)
+  }
+})
 
 app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
