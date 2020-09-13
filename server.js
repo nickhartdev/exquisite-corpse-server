@@ -70,6 +70,16 @@ app.post('/api/v1/authors', async (request, response) => {
   }
 });
 
+app.get('/api/v1/stories', (request, response) => {
+  try {
+    knex('stories')
+      .select()
+      .then(stories => response.status(200).json(stories))
+  } catch (error) {
+    console.error(error.message)
+  }
+})
+
 app.get('/api/v1/stories/:id', (request, response) => {
   try {
     knex('stories')
