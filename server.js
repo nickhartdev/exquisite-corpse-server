@@ -46,9 +46,8 @@ app.post('/api/v1/authors', async (request, response) => {
   }
 });
 // PROMPTS
-const promptGenerator = (request) => {
+const promptGenerator = (genre) => {
   try {
-    const genre = request.params.genre;
     const allPrompts = () => {
       return knex("prompts").groupBy("id").select();
     };
@@ -65,9 +64,16 @@ const promptGenerator = (request) => {
   }
 };
 
+const findSpecificPrompt = (id) => {
+  return knex("prompts")
+    .groupBy("id")
+    .select()
+    .having("id", "=", id)
+}
+
 app.get('/api/v1/prompts', async (request, response) => {
   try {
-    promptGenerator(request).then(prompt => {
+    promptGenerator().then(prompt => {
       response.status(200).json(prompt)
     })
   } catch (error) {
@@ -75,15 +81,24 @@ app.get('/api/v1/prompts', async (request, response) => {
   }
 });  
 
-app.get('/api/v1/prompts/:genre', async(request, response) =>  {
+app.get('/api/v1/prompts/:detail', async(request, response) =>  {
   try {
-    promptGenerator(request).then((prompt) => {
-      response.status(200).json(prompt)
-    })
+    const detail = request.params.detail
+    let prompt;
+    if(isNaN(detail)) {
+      await promptGenerator(detail).then(randomPrompt => {
+        prompt = randomPrompt
+      })
+    } else {
+      await findSpecificPrompt(detail).then(specificPrompt => {
+        prompt = specificPrompt
+      })
+    }
+    response.status(200).json(prompt)
   } catch (error) {
     console.error(error);
   }
-})  
+}) 
 //STORIES
 app.get('/api/v1/stories', (request, response) => {
   try {
