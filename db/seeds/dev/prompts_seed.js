@@ -7,7 +7,8 @@ exports.seed = function(knex) {
       return knex('prompts').insert([
         {id: 1, prompt: 'A dog walks into a bar', genre: 'absurd'},
         {id: 2, prompt: 'Your mom was an alien the whole time', genre:'sci-fi'},
-        {id: 3, prompt: 'The president is a really nice guy', genre: 'satire'}
+        {id: 3, prompt: 'The president is a really nice guy', genre: 'satire'},
+        {id: 4, prompt: 'The president is a really nice guy', genre: 'absurd'}
       ]);
     });
 };
