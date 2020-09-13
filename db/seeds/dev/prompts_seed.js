@@ -309,6 +309,56 @@ exports.seed = function(knex) {
           prompt: "You discover that Earth is the \"North Korea\" of the galaxy",
           genre: "science fiction",
         },
+        {
+          id: 61,
+          prompt: "You have a disorder that only allows you to communicate in clichés. You just witnessed a crime. Report all the details.",
+          genre: "writing challenge",
+        },
+        {
+          id: 62,
+          prompt: "Humans are a minuscule minority in the afterlife. Both heaven and hell are full of dinosaurs.",
+          genre: "satire",
+        },
+        {
+          id: 63,
+          prompt: "Everybody in the world has a superpower that compliments their soulmates superpower. When together, both their powers increase in strength exponentially. You have the most useless power ever, when one day...",
+          genre: "superhero",
+        },
+        {
+          id: 64,
+          prompt: "Your seventh son is fated to murder you. You laugh until you remember you used to donate sperm.",
+          genre: "murder",
+        },
+        {
+          id: 65,
+          prompt: "Instead of the oceans covering the earth, forests are in their place, making it possible to walk from continent to continent. Like oceans, it gets deeper and darker and creatures get more aggressive and rarer to see. You are tasked to document a trek through one of the oceans of your choice.",
+          genre: "science fiction",
+        },
+        {
+          id: 66,
+          prompt: "Vampires are not the bloodthirsty monsters people believe them to be. For millennia their bite has been one of inoculation against the worst plagues and infections of history, humanity's greatest disease outbreaks coinciding with periods we had hunted them to near extinction.",
+          genre: "fantasy",
+        },
+        {
+          id: 67,
+          prompt: "Technology has advanced to the point no one alive has seen or even heard of a naked flame; one day a fire starts.",
+          genre: "murder",
+        },
+        {
+          id: 68,
+          prompt: "Instead of trying to get a man on the moon, every nation raced to be the first at the very bottom of the ocean",
+          genre: "science fiction",
+        },
+        {
+          id: 69,
+          prompt: "A shapeshifter deals with an existential crisis after realizing it no longer remembers its original shape.",
+          genre: "existential",
+        },
+        {
+          id: 70,
+          prompt: "In the year 2075, American and Chinese astronauts race to be the first colonists on an earth-like exoplanet. Upon arrival, they discover that someone has beaten them there: the Amish.",
+          genre: "science fiction",
+        },
 
       ]);
     });
