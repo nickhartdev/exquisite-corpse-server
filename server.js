@@ -53,7 +53,21 @@ app.post("/api/v1/authors", async (request, response) => {
   }
 });
 
-app.post("/api/v1/stories", async (request, response) => {
+app.get('/api/v1/stories/:id', (request, response) => {
+  try {
+    knex('stories')
+      .groupBy('id')
+      .select()
+      .having('id', '=', request.params.id)
+      .then(story => {
+        return response.status(200).json(story)
+      });
+  } catch (error) {
+    console.error(error.message)
+  }
+})
+
+app.post("/api/v1/stories", (request, response) => {
   const storyInfo = request.body
 
   try {
