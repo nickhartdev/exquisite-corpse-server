@@ -116,8 +116,43 @@ exports.seed = function(knex) {
         },
         {
           id: 23,
-          prompt: "",
+          prompt: "In the year 2022, a mysterious, giant tower appears in the deep jungles of Latin America. Thousands have entered it, no one has ever been seen coming out. In the year 2021, you decide to enter the tower. As the doors close behind you, a huge sign lights up \"Level 1\".",
+          genre: "science fiction",
+        },
+        {
+          id: 24,
+          prompt: "You work in tech support. One day you receive a call from someone you begin to suspect is God and, boy, are they mad.",
+          genre: "satire",
+        },
+        {
+          id: 25,
+          prompt: "Aliens have finally reached Earth and, per Intergalactic Law, have sent their most average champion to win the planet. A device is sent to find the most average human to accept the challenge and duel for the fate of Earth. It's you.",
+          genre: "science fiction",
+        },
+        {
+          id: 26,
+          prompt: "You get a membership to a tiny rundown gym as a present from your eccentric uncle. It takes some time, but you begin to grow suspicious: Is every member here a...super hero?",
+          genre: "superhero",
+        },
+        {
+          id: 27,
+          prompt: "Humanity has developed a hypersensitivity to puns, experiencing physical pain when exposed to especially bad wordplays. As no physical damage happens, it is used to penalize petty criminals. This is your job. You are the Punisher.",
+          genre: "absurd",
+        },
+        {
+          id: 28,
+          prompt: "Your child and you go to a toy store so they can spend their allowance, and they choose one of those cheesy 8 ball fortune teller things. Later on you jokingly ask it a personal question and it responds with something that isn't on the dice inside the 8 ball.",
+          genre: "mystery",
+        },
+        {
+          id: 29,
+          prompt: "Hogwarts is funded by the ministry of magic. But you're American, so you have to go to the local inner city, Detroit Public School of Sorcery",
           genre: "fantasy",
+        },
+        {
+          id: 30,
+          prompt: "After a long and bloody battle, both the hero and villain are going to die of their wounds. As the sit across from each other, leaning on rubble, the villain pulls out a flask of whiskey and has a heart-felt last talk with the hero, before they both die of blood loss.",
+          genre: "superhero",
         },
 
       ]);
