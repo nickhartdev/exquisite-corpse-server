@@ -65,7 +65,6 @@ app.post("/api/v1/authors", async (request, response) => {
       console.error(error.message);
     }
   } else {
-    //return an error message
     response.status(422).json(`You don't got the right info`);
   }
 });
