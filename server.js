@@ -58,21 +58,34 @@ const isAuthor = async (id) => {
 
 const checkLoginInfo = (info) => {
   const infoProvided = Object.keys(info)
-  const result = { enoughInfo: false, message: ''}
+  const result = { hasEnoughInfo: false, message: '', userType: ''}
   if (!infoProvided.includes("password")) {
     result.message = 'You need to provide a password'
   } else if (!infoProvided.some(info => ["email", "name"].includes(info))) {
     result.message = 'Please provide a username or an email to login'
   } else {
-    result.enoughInfo = true
+    result.userType = infoProvided.includes('name') ? 'name' : 'email' 
+    result.hasEnoughInfo = true
   }
   return result
 }
 
-app.post('/api/v1/authors/login', async (request, response) => {
-  const login = checkLoginInfo(request.body)
-  response.status(200).json(login.message)
-})
+// app.post('/api/v1/authors/login', async (request, response) => {
+//   const login = checkLoginInfo(request.body)
+//   if (login.hasEnoughInfo) {
+//     try {
+//       knex('authors')
+//         .groupBy('id')
+//         .select()
+//         .having(login.userType, '=', response.body[userType])
+//         .then(user => response.status(200).json(user))
+//     } catch (error) {
+//       console.error(error.message)
+//     }
+//   } else {
+//     response.status(422).json(login.message)
+//   }
+// })
 
 app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
