@@ -56,6 +56,24 @@ const isAuthor = async (id) => {
   return author.length === 1 ? true: false;
 };
 
+const checkLoginInfo = (info) => {
+  const infoProvided = Object.keys(info)
+  const result = { enoughInfo: false, message: ''}
+  if (!infoProvided.includes("password")) {
+    result.message = 'You need to provide a password'
+  } else if (!infoProvided.some(info => ["email", "name"].includes(info))) {
+    result.message = 'Please provide a username or an email to login'
+  } else {
+    result.enoughInfo = true
+  }
+  return result
+}
+
+app.post('/api/v1/authors/login', async (request, response) => {
+  const login = checkLoginInfo(request.body)
+  response.status(200).json(login.message)
+})
+
 app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
   const acceptableUpdates = ['email', 'password', 'bio']
@@ -83,7 +101,6 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
       }
     })
 })
-
 
 // PROMPTS
 const promptGenerator = (genre) => {
