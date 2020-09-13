@@ -254,6 +254,61 @@ exports.seed = function(knex) {
           prompt: "Write a gruesome story using only euphemisms so than it can be read to a group of children without frightening them",
           genre: "writing challenge",
         },
+        {
+          id: 51,
+          prompt: "The military just can't stop its killer robots from turning into Buddhists.",
+          genre: "satire",
+        },
+        {
+          id: 52,
+          prompt: "People stop using Antivirus software because they believe it's making their computers autistic. You are an IT intern at the wake of disaster.",
+          genre: "satire",
+        },
+        {
+          id: 53,
+          prompt: "Describe a battle with an army against a single person... Except that person is a level 20 D&D character.",
+          genre: "fantasy",
+        },
+        {
+          id: 54,
+          prompt: "The Devil promises you everything: fame, fortune, all the things a mortal will ever need for paradise on earth. But he doesn't want your soul, he just wants you to take his socially awkward daughter, Gertrude, out on a date. Make her feel special, y'know?",
+          genre: "absurd",
+        },
+        {
+          id: 55,
+          prompt: "You are forced to take a genies place, and can only be freed once you have granted 10 wishes. The catch: You have no magical abilities in any way.",
+          genre: "fantasy",
+        },
+        {
+          id: 56,
+          prompt: "A love story between a woman who takes everything literally and a man who speaks exclusively in metaphors.",
+          genre: "romance",
+        },
+        {
+          id: 57,
+          prompt: "You are acing every class at the International Espionage Academy except one: Post Kill Puns. You have been tasked to practice these as your homework.",
+          genre: "writing challenge",
+        },
+        {
+          id: 57,
+          prompt: "In a world where everyone survives off of basic income, companies have to convince you to work for them.",
+          genre: "satire",
+        },
+        {
+          id: 58,
+          prompt: "A duel between two Wizards. Except they are not Archmages but apprentices who can barely cast spells.",
+          genre: "fantasy",
+        },
+        {
+          id: 59,
+          prompt: "It's the coldest Christmas Eve in history, and a poor family is out of coal for the furnace. The only child in the family has 24 hours to get on the naughty list.",
+          genre: "absurd",
+        },
+        {
+          id: 60,
+          prompt: "You discover that Earth is the \"North Korea\" of the galaxy",
+          genre: "science fiction",
+        },
 
       ]);
     });
