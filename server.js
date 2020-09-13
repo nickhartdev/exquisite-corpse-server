@@ -52,6 +52,7 @@ app.get('/api/v1/prompts/:genre', async (request, response) => {
 app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
   const requiredKeys = ['name', 'email']
+
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
       knex('authors')
