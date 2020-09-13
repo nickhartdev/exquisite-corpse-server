@@ -33,12 +33,16 @@ app.get("/api/v1/prompts", async (request, response) => {
 });
 
 app.post("/api/v1/authors", async (request, response) => {
-  const author = request.body;
+  const author = request.body
   const requiredKeys = ["name", "email"];
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
       knex("authors")
-        .insert({ name: author.name, email: author.email, password: author.password })
+        .insert({ 
+          name: author.name, 
+          email: author.email, 
+          password: author.password 
+        })
         .then((response) => console.log(response));
     } catch (error) {
       console.error(error.message);
@@ -48,6 +52,22 @@ app.post("/api/v1/authors", async (request, response) => {
     response.status(422).json(`You don't got the right info`);
   }
 });
+
+app.post("/api/v1/stories", async (request, response) => {
+  const storyInfo = request.body
+
+  try {
+    knex("stories")
+      .insert({ 
+        title: storyInfo.title, 
+        story: storyInfo.story, 
+        prompt: storyInfo.prompt 
+      })
+      .then(response => console.log(response));
+  } catch (error) {
+    console.error(error.message)
+  }
+})
 
 app.listen(app.get('port'), () => {
   console.log(`This server is running on http://localhost:${app.get('port')}`)
