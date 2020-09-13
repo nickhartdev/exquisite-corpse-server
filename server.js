@@ -86,17 +86,22 @@ app.get('/api/v1/stories/:id', (request, response) => {
 
 app.post("/api/v1/stories", (request, response) => {
   const storyInfo = request.body
+  const requiredKeys = ['title', 'story', 'prompt']
 
-  try {
-    knex("stories")
-      .insert({ 
-        title: storyInfo.title, 
-        story: storyInfo.story, 
-        prompt: storyInfo.prompt 
-      })
-      .then(response => console.log(response));
-  } catch (error) {
-    console.error(error.message)
+  if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
+    try {
+      knex("stories")
+        .insert({ 
+          title: storyInfo.title, 
+          story: storyInfo.story, 
+          prompt: storyInfo.prompt 
+        })
+        .then(response => console.log(response));
+    } catch (error) {
+      console.error(error.message)
+    }
+  } else {
+    response.status(422).json('Yer missin some info')
   }
 })
 
