@@ -27,7 +27,7 @@ app.get('/api/v1/authors', async(request, response) => {
 
 app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
-  const requiredKeys = ['name', 'email']
+  const requiredKeys = ['name', 'email', 'password']
 
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
@@ -37,14 +37,54 @@ app.post('/api/v1/authors', async (request, response) => {
           email: author.email, 
           password: author.password 
         })
-        .then((response) => console.log(response))
+        .then((response) => response.status(200).json(`${author.name} has been created`))
     } catch (error) {
       console.error(error.message)
     }
   } else {
     response.status(422).json(`You don't got the right info`)
   }
-});
+})
+
+const isAuthor = async (id) => {
+  let author 
+  await knex("authors")
+    .groupBy("id")
+    .select()
+    .having("id", "=", id)
+    .then(foundAuthor => author = foundAuthor);
+  return author.length === 1 ? true: false;
+};
+
+app.patch('/api/v1/authors/:id', async (request, response) => {
+  const info = Object.keys(request.body)
+  const acceptableUpdates = ['email', 'password', 'bio']
+  const getAuthor = () => knex("authors").where({ id: request.params.id })
+  return isAuthor(request.params.id)
+    .then(isAuthor => {
+      if(!isAuthor) {
+        return response.status(404).json(`There is not a user with that id`) 
+      } else if (info.some(detail => acceptableUpdates.includes(detail) === false)) {
+        return response.status(422).json(`You can only update email, password, or bio`)
+      } else {
+        try {
+          info.forEach(async (detail, i) => {
+            knex("authors")
+              .where({ id: request.params.id })
+              .update({ [detail]: request.body[detail] })
+              .then(() => {
+                i === info.length - 1
+                  && response.status(200).json('Your account has been updated!')
+              })
+            })
+        } catch (error) {
+          console.error(error.message)
+        }
+      }
+    })
+})
+
+
 // PROMPTS
 const promptGenerator = (genre) => {
   try {
