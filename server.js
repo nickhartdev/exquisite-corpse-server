@@ -13,37 +13,11 @@ app.use(express.json())
 app.use(cors())
 
 app.set('port', process.env.PORT || 3005)
-
+//AUTHORS AND USERS
 app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from('authors')
       .then((authors) => response.status(200).json(authors))
-  } catch (error) {
-    console.error(error.message)
-  }
-})
-
-app.get('/api/v1/prompts', async (request, response) => {
-  try {
-    knex.select().from('prompts')
-      .then((prompts) => response.status(200).json(prompts));
-  } catch (error) {
-    console.error(error.message)
-  }
-});  
-
-app.get('/api/v1/prompts/:genre', async (request, response) => {
-  try {
-    knex('prompts')
-      .groupBy('id')
-      .select()
-      .having('genre', '=', request.params.genre)
-      .then(promptData => {
-        const allPrompts = response.json(promptData)
-        const randomIndex = Math.round(Math.random() * allPrompts.length)
-
-        return allPrompts[randomIndex]
-      })
   } catch (error) {
     console.error(error.message)
   }
@@ -69,6 +43,73 @@ app.post('/api/v1/authors', async (request, response) => {
     response.status(422).json(`You don't got the right info`)
   }
 });
+// ALL PROMPTS
+
+const promptGenerator = (request) => {
+  try {
+    const genre = request.params.genre;
+    const allPrompts = () => {
+      return knex("prompts").groupBy("id").select();
+    };
+    const filterPrompts = () => {
+      return genre ? allPrompts().having("genre", "=", genre) : allPrompts()
+    };
+
+    return filterPrompts().then((prompts) => {
+      const randomIndex = Math.round(Math.random() * prompts.length - 1);
+      return prompts[randomIndex]
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+app.get('/api/v1/prompts', async (request, response) => {
+  try {
+    promptGenerator(request).then(prompt => {
+      response.status(200).json(prompt)
+    })
+  } catch (error) {
+    console.error(error)
+  }
+});  
+
+app.get('/api/v1/prompts/:genre', async(request, response) =>  {
+  try {
+    promptGenerator(request).then((prompt) => {
+      response.status(200).json(prompt)
+    })
+  } catch (error) {
+    console.error(error);
+  }
+})  
+
+
+
+// app.get('/api/v1/prompts/:genre', async (request, response) => {
+// try {
+//   const genre = request.params.genre
+//   let allPrompts;
+//   if (genre) {
+//     allPrompts = knex("prompts")
+//     .groupBy("id")
+//     .select()
+//     .having("genre", "=", request.params.genre)
+//     .then((hi) => console.log(hi))
+//   } else {
+//     allPrompts = knex('prompts')
+//       .select()
+//   }
+//     allPrompts.then((promptData) => {
+//       const allPrompts = response.json(promptData);
+//       const randomIndex = Math.round(Math.random() * allPrompts.length);
+
+//       return allPrompts[randomIndex];
+//     });
+// } catch (error) {
+//   console.error(error.message);
+// }
+// })
 
 app.get('/api/v1/stories', (request, response) => {
   try {
