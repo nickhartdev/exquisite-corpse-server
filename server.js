@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import express, { response } from 'express'
 import cors from 'cors'
-import {UserHelper, PromptHelper} from './server-helpers'
+import { UserHelper, PromptHelper, StoryHelper } from './server-helpers'
 
 const app = express()
 const knex = require('knex')({
@@ -181,7 +181,7 @@ app.post('/api/v1/stories', (request, response) => {
         .insert({ 
           title: storyInfo.title, 
           story: storyInfo.story, 
-          prompt: storyInfo.prompt 
+          prompt: storyInfo.prompt
         })
         .then(response => console.log(response))
     } catch (error) {
@@ -192,10 +192,21 @@ app.post('/api/v1/stories', (request, response) => {
   }
 })
 
-app.post('/api/v1/stories/:id', (request, response) => {
-  //can we find the story?
-  //is the story complete?
-  //has an author's id been provided?
+app.patch('/api/v1/stories/:id', (request, response) => {
+  const story_id = request.params.id;
+  StoryHelper.findStory(story_id)
+    .then(story => {
+      const problems = StoryHelper.checkForProblems(request.body)
+      if (story.length === 0) {
+        response.status(404).json('The story was not found')
+      } else if (story[0].is_complete === true) {
+        response.status(422).json(`The story is finished, you can't write more here`)
+      } else if (problems.length > 0) {
+        response.status(422).json(problems.join(' '))
+      } else {
+        StoryHelper.updateStory(request.body, story[0], response) 
+      } 
+    })
 })
 
 app.listen(app.get('port'), () => {

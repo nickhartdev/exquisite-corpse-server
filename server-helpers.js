@@ -107,4 +107,65 @@ class PromptHelper {
   }
 }
 
-export { UserHelper, PromptHelper }
+class StoryHelper {
+  static checkForProblems = (story) => {
+    const requiredFields = ['contributions', 'contributors']
+    const problems = []
+    const missingFields = requiredFields.filter(field => !Object.keys(story).includes(field))
+    missingFields.length > 0 && problems.push(`Your entry is missing this data: ${missingFields.join(", ")}.`)
+    Object.keys(story).forEach(field => {
+      if (field === "contributions" && typeof story.contributions !== "string") {
+        problems.push('Contributions should be a string.')
+      } else if (field === 'contributors' && isNaN(story.contributors)) {
+        problems.push('Contributors should be denoted by their id, a number.')
+      } else if (field === 'prompt' || field === 'title' || field === 'id') {
+        problems.push(`${fields}s are not allowed to be updated`)
+      } else if (field === 'is_complete' && typeof story.is_complete !== "boolean") {
+        problems.push('Stories being complete should be true or false.')
+      } else if (field === 'created_at' || field === 'updated_at') {
+        problems.push('You can not manually update publishing dates')
+      }
+    })
+    return problems
+  }
+
+  static findStory = async (id) => {
+    try {
+      return knex('stories')
+        .groupBy('id')
+        .select()
+        .having('id', '=', id)
+    } catch (error) {
+      console.error(error.message)
+    }
+  }
+
+  static updateStory = async (newInfo, oldStory, response) => {
+      const updatesToMake = Object.keys(newInfo)
+      const newStory = updatesToMake.reduce((newStory, update, i) => {
+        if (i === 0) newStory = oldStory
+        if (update === 'contributions' || update === 'contributors') {
+          newStory[update].push(newInfo[update])
+        } else if (update === 'is_complete') {
+          newStory.is_complete = newInfo.is_complete
+        }
+        return newStory
+      }, {})
+      try {
+        knex('stories')
+          .where({id: oldStory.id})
+          .update({ 
+            contributions: newStory.contributions,
+            contributors: newStory.contributors,
+            is_complete: newStory.is_complete
+          })
+          .then(() => {
+            this.findStory(oldStory.id).then(story => response.status(200).json(story))
+          })
+      } catch (error) {
+        console.error(error.message)
+      }
+  }
+}
+
+export { UserHelper, PromptHelper, StoryHelper }
