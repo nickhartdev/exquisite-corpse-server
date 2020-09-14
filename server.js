@@ -2,6 +2,7 @@ require('dotenv').config()
 
 import express, { response } from 'express'
 import cors from 'cors'
+import UserHelp from './server-helpers'
 
 const app = express()
 const knex = require('knex')({
@@ -15,37 +16,6 @@ app.use(cors())
 app.set('port', process.env.PORT || 3005)
 app.locals.title = "The Exquisite Corpse server"
 
-//AUTHORS AND USERS
-
-const findAuthorById = async id => {
-  try {
-    return knex('authors')
-      .groupBy('id')
-      .select()
-      .having('id', '=', id)
-  } catch (error) {
-    console.error(error.message)
-  }
-}
-
-const makeSecureUserResponse = ({
-  id,
-  name,
-  email,
-  bio,
-  created_at,
-  updated_at,
-}) => {
-  return {
-    id: id,
-    name: name,
-    email: email,
-    bio: bio,
-    created_at: created_at,
-    updated_at: updated_at,
-  };
-};
-
 app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from('authors')
@@ -56,9 +26,9 @@ app.get('/api/v1/authors', async(request, response) => {
 })
 
 app.get("/api/v1/authors/:id", async (request, response) => {
-  findAuthorById(request.params.id).then(author => {
+  UserHelp.findAuthorById(request.params.id).then(author => {
     if (author.length === 1) {
-      response.status(200).json(makeSecureUserResponse(author[0]))
+      response.status(200).json(UserHelp.makeSecureUserResponse(author[0]))
     } else if (author.length === 0) {
       response.status(404).json('Author not found')
     } else {
@@ -90,49 +60,16 @@ app.post('/api/v1/authors', async (request, response) => {
   }
 })
 
-const checkLoginInfo = (info) => {
-  const infoProvided = Object.keys(info)
-  const result = { hasEnoughInfo: false, message: '', userType: ''}
-  if (!infoProvided.includes("password")) {
-    result.message = 'You need to provide a password'
-  } else if (!infoProvided.some(info => ["email", "name"].includes(info))) {
-    result.message = 'Please provide a username or an email to login'
-  } else {
-    result.userType = infoProvided.includes('name') ? 'name' : 'email' 
-    result.hasEnoughInfo = true
-  }
-  return result
-}
-
-const authenticateUser = (userAccount, attemptedPassword, response) => {
-  try {
-    if (userAccount[0].password === attemptedPassword) {
-      return response.status(200).json(makeSecureUserResponse(userAccount[0]))
-    } else {
-      return response.status(422).json('An incorrect password was provided!')
-    }
-  } catch (error) {
-    console.error(error.message)
-  }
-}
-
-const findAuthorByNameOrEmail = async (queryType, queryValue) => {
-  return knex('authors')
-    .groupBy('id')
-    .select()
-    .having(queryType, '=', queryValue)
-}
-
 app.post('/api/v1/authors/login', async (request, response) => {
-  const login = checkLoginInfo(request.body)
+  const login = UserHelp.checkLoginInfo(request.body)
   if (login.hasEnoughInfo) {
     try {
-      findAuthorByNameOrEmail(login.userType, request.body[login.userType])
+      UserHelp.findAuthorByNameOrEmail(login.userType, request.body[login.userType])
         .then(user => {
           if (user.length === 0) {
             return response.status(422).json('A user by that name was not found')
           } else {
-            return authenticateUser(user, request.body.password, response)
+            return UserHelp.authenticateUser(user, request.body.password, response)
           }
         })
     } catch (error) {
@@ -147,7 +84,7 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
   const acceptableUpdates = ['email', 'password', 'bio']
   const getAuthor = () => knex("authors").where({ id: request.params.id })
-  return findAuthorById(request.params.id)
+  return UserHelp.findAuthorById(request.params.id)
     .then(author => {
       if(author.length === 0) {
         return response.status(404).json(`There is not a user with that id`) 
