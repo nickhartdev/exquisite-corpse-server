@@ -19,7 +19,10 @@ app.locals.title = "The Exquisite Corpse server"
 app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from('authors')
-      .then((authors) => response.status(200).json(authors))
+      .then((authors) => {
+        authors = authors.map(author => UserHelper.makeSecureUserResponse(author))
+        response.status(200).json(authors)
+      })
   } catch (error) {
     console.error(error.message)
   }
