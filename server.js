@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import express, { response } from 'express'
 import cors from 'cors'
-import UserHelp from './server-helpers'
+import {UserHelper, PromptHelper} from './server-helpers'
 
 const app = express()
 const knex = require('knex')({
@@ -15,7 +15,7 @@ app.use(cors())
 
 app.set('port', process.env.PORT || 3005)
 app.locals.title = "The Exquisite Corpse server"
-
+//AUTHORS AND USERS
 app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from('authors')
@@ -26,9 +26,9 @@ app.get('/api/v1/authors', async(request, response) => {
 })
 
 app.get("/api/v1/authors/:id", async (request, response) => {
-  UserHelp.findAuthorById(request.params.id).then(author => {
+  UserHelper.findAuthorById(request.params.id).then(author => {
     if (author.length === 1) {
-      response.status(200).json(UserHelp.makeSecureUserResponse(author[0]))
+      response.status(200).json(UserHelper.makeSecureUserResponse(author[0]))
     } else if (author.length === 0) {
       response.status(404).json('Author not found')
     } else {
@@ -61,15 +61,15 @@ app.post('/api/v1/authors', async (request, response) => {
 })
 
 app.post('/api/v1/authors/login', async (request, response) => {
-  const login = UserHelp.checkLoginInfo(request.body)
+  const login = UserHelper.checkLoginInfo(request.body)
   if (login.hasEnoughInfo) {
     try {
-      UserHelp.findAuthorByNameOrEmail(login.userType, request.body[login.userType])
+      UserHelper.findAuthorByNameOrEmail(login.userType, request.body[login.userType])
         .then(user => {
           if (user.length === 0) {
             return response.status(422).json('A user by that name was not found')
           } else {
-            return UserHelp.authenticateUser(user, request.body.password, response)
+            return UserHelper.authenticateUser(user, request.body.password, response)
           }
         })
     } catch (error) {
@@ -84,7 +84,7 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
   const acceptableUpdates = ['email', 'password', 'bio']
   const getAuthor = () => knex("authors").where({ id: request.params.id })
-  return UserHelp.findAuthorById(request.params.id)
+  return UserHelper.findAuthorById(request.params.id)
     .then(author => {
       if(author.length === 0) {
         return response.status(404).json(`There is not a user with that id`) 
@@ -107,38 +107,13 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
       }
     })
 })
-
 // PROMPTS
-const promptGenerator = (genre) => {
-  try {
-    const allPrompts = () => {
-      return knex("prompts").groupBy("id").select();
-    };
-    const filterPrompts = () => {
-      return genre ? allPrompts().having("genre", "=", genre) : allPrompts()
-    };
-
-    return filterPrompts().then((prompts) => {
-      const randomIndex = Math.round(Math.random() * prompts.length - 1);
-      return prompts[randomIndex]
-    });
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
-const findSpecificPrompt = (id) => {
-  return knex("prompts")
-    .groupBy("id")
-    .select()
-    .having("id", "=", id)
-}
-
 app.get('/api/v1/prompts', async (request, response) => {
   try {
-    promptGenerator().then(prompt => {
-      response.status(200).json(prompt)
-    })
+    knex('prompts').select()
+      .then(prompts => {
+        response.status(200).json(prompts)
+      })
   } catch (error) {
     console.error(error)
   }
@@ -149,11 +124,11 @@ app.get('/api/v1/prompts/:detail', async(request, response) =>  {
     const detail = request.params.detail
     let prompt;
     if(isNaN(detail)) {
-      await promptGenerator(detail).then(randomPrompt => {
+      await PromptHelper.promptGenerator(detail).then(randomPrompt => {
         prompt = randomPrompt
       })
     } else {
-      await findSpecificPrompt(detail).then(specificPrompt => {
+      await PromptHelper.findSpecificPrompt(detail).then(specificPrompt => {
         prompt = specificPrompt
       })
     }

@@ -5,7 +5,7 @@ const knex = require("knex")({
   connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
 });
 
-class UserHelp {
+class UserHelper {
   static findAuthorById = async id => {
     try {
       return knex('authors')
@@ -69,4 +69,30 @@ class UserHelp {
   }
 }
 
-export default UserHelp
+class PromptHelper {
+  static promptGenerator = (genre) => {
+    try {
+      const allPrompts = () => {
+        return knex("prompts").groupBy("id").select();
+      }
+      const filterPrompts = () => {
+        return genre === 'any' ? allPrompts() : allPrompts().having("genre", "=", genre);
+      }
+      return filterPrompts().then((prompts) => {
+        const randomIndex = Math.round(Math.random() * prompts.length - 1);
+        return prompts[randomIndex]
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  static findSpecificPrompt = (id) => {
+    return knex("prompts")
+      .groupBy("id")
+      .select()
+      .having("id", "=", id)
+  }
+}
+
+export { UserHelper, PromptHelper }
