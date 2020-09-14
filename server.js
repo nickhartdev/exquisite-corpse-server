@@ -17,7 +17,7 @@ app.locals.title = "The Exquisite Corpse server"
 
 //AUTHORS AND USERS
 
-const findAuthor = async id => {
+const findAuthorById = async id => {
   try {
     return knex('authors')
       .groupBy('id')
@@ -56,7 +56,7 @@ app.get('/api/v1/authors', async(request, response) => {
 })
 
 app.get("/api/v1/authors/:id", async (request, response) => {
-  findAuthor(request.params.id).then(author => {
+  findAuthorById(request.params.id).then(author => {
     if (author.length === 1) {
       response.status(200).json(makeSecureUserResponse(author[0]))
     } else if (author.length === 0) {
@@ -72,7 +72,7 @@ app.get("/api/v1/authors/:id", async (request, response) => {
 app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
   const requiredKeys = ['name', 'email', 'password']
-
+  
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
       knex('authors')
@@ -89,16 +89,6 @@ app.post('/api/v1/authors', async (request, response) => {
     response.status(422).json(`You don't got the right info`)
   }
 })
-
-const isAuthor = async (id) => {
-  let author 
-  await knex("authors")
-    .groupBy("id")
-    .select()
-    .having("id", "=", id)
-    .then(foundAuthor => author = foundAuthor);
-  return author.length === 1 ? true: false;
-};
 
 const checkLoginInfo = (info) => {
   const infoProvided = Object.keys(info)
@@ -153,9 +143,9 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
   const info = Object.keys(request.body)
   const acceptableUpdates = ['email', 'password', 'bio']
   const getAuthor = () => knex("authors").where({ id: request.params.id })
-  return isAuthor(request.params.id)
-    .then(isAuthor => {
-      if(!isAuthor) {
+  return findAuthorById(request.params.id)
+    .then(author => {
+      if(author.length === 0) {
         return response.status(404).json(`There is not a user with that id`) 
       } else if (info.some(detail => acceptableUpdates.includes(detail) === false)) {
         return response.status(422).json(`You can only update email, password, or bio`)
