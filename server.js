@@ -16,6 +16,36 @@ app.set('port', process.env.PORT || 3005)
 app.locals.title = "The Exquisite Corpse server"
 
 //AUTHORS AND USERS
+
+const findAuthor = async id => {
+  try {
+    return knex('authors')
+      .groupBy('id')
+      .select()
+      .having('id', '=', id)
+  } catch (error) {
+    console.error(error.message)
+  }
+}
+
+const makeSecureUserResponse = ({
+  id,
+  name,
+  email,
+  bio,
+  created_at,
+  updated_at,
+}) => {
+  return {
+    id: id,
+    name: name,
+    email: email,
+    bio: bio,
+    created_at: created_at,
+    updated_at: updated_at,
+  };
+};
+
 app.get('/api/v1/authors', async(request, response) => {
   try {
     knex.select().from('authors')
@@ -23,6 +53,20 @@ app.get('/api/v1/authors', async(request, response) => {
   } catch (error) {
     console.error(error.message)
   }
+})
+
+app.get("/api/v1/authors/:id", async (request, response) => {
+  findAuthor(request.params.id).then(author => {
+    if (author.length === 1) {
+      response.status(200).json(makeSecureUserResponse(author[0]))
+    } else if (author.length === 0) {
+      response.status(404).json('Author not found')
+    } else {
+      response.status(500).json(
+        `Something's horribly wrong, the server has more than one author with that id`
+      )
+    }
+  })
 })
 
 app.post('/api/v1/authors', async (request, response) => {
@@ -68,17 +112,6 @@ const checkLoginInfo = (info) => {
     result.hasEnoughInfo = true
   }
   return result
-}
-
-const makeSecureUserResponse = ({ id, name, email, bio, created_at, updated_at}) =>{
-  return {
-    id: id,
-    name: name,
-    email: email,
-    bio: bio,
-    created_at: created_at,
-    updated_at: updated_at
-  }
 }
 
 const authenticateUser = (userAccount, attemptedPassword, response) => {
