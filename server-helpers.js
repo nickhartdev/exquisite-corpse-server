@@ -67,6 +67,18 @@ class UserHelper {
       .select()
       .having(queryType, '=', queryValue)
   }
+
+  static userIsTaken = async (author) => {
+    const { name, email } = author 
+    const checkAgainst = ["name", "email"]
+    const result = [name, email].reduce(async (isTaken, thing, i) => {
+      const resolvedUsers = await Promise.resolve(isTaken)
+      return await this.findAuthorByNameOrEmail(checkAgainst[i], thing).then(user => {
+        return user.length > 0 ? resolvedUsers.concat(checkAgainst[i]) : resolvedUsers
+      })
+    }, [])
+    return await result
+  }
 }
 
 class PromptHelper {

@@ -42,22 +42,45 @@ app.get("/api/v1/authors/:id", async (request, response) => {
 app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
   const requiredKeys = ['name', 'email', 'password']
-
-  if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
-    try {
-      knex('authors')
-        .insert({ 
-          name: author.name, 
-          email: author.email, 
-          password: author.password 
-        })
-        .then((response) => response.status(200).json(`${author.name} has been created`))
-    } catch (error) {
-      console.error(error.message)
-    }
-  } else {
-    response.status(422).json(`You don't got the right info`)
+  if (!Object.keys(author).every(detail => requiredKeys.includes(detail))) {
+    response.status(422).json('Please include a name, email, and password')
   }
+  UserHelper.userIsTaken(author).then(isTaken => {
+    console.log(isTaken)
+    if(isTaken.length > 0) {
+      response.status(422)
+      .json(`That ${isTaken.join(' and ')} is taken, please try again`)
+    } else {
+        try {
+          knex('authors')
+            .insert({ 
+              name: author.name, 
+              email: author.email, 
+              password: author.password 
+            })
+            .then(() => response.status(200).json(`${author.name} has been created`))
+        } catch (error) {
+          console.error(error.message)
+        }
+    }
+  })
+  // const isTaken = []
+  // const checkUserKeys = ['name', 'email']
+  // [author.name, author.email].forEach((detail, i) => {
+  //   UserHelper.findAuthorByNameOrEmail(checkUserKeys[i], detail)
+  //   .then(user => {
+  //     if (user.length > 0) isTaken.push(requiredKeys[i])
+  //   })
+  //   .then(() => {
+  //     if (i === 2) 
+  //   })
+  // }
+  // .then(() => console.log('IT IS'))
+
+  // if (userIsTaken) {
+  //   response.status(422).json(`That ${userIsTaken.join(' and ')} is taken. Please try again`)
+  // } else {
+  // }
 })
 
 app.post('/api/v1/authors/login', async (request, response) => {
