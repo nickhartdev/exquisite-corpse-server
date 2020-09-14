@@ -46,7 +46,6 @@ app.post('/api/v1/authors', async (request, response) => {
     response.status(422).json('Please include a name, email, and password')
   }
   UserHelper.userIsTaken(author).then(isTaken => {
-    console.log(isTaken)
     if(isTaken.length > 0) {
       response.status(422)
       .json(`That ${isTaken.join(' and ')} is taken, please try again`)
@@ -58,29 +57,16 @@ app.post('/api/v1/authors', async (request, response) => {
               email: author.email, 
               password: author.password 
             })
-            .then(() => response.status(200).json(`${author.name} has been created`))
+            .then(() => {
+              UserHelper.findAuthorByNameOrEmail('name', author.name).then(newAuthor => {
+                response.status(200).json(UserHelper.makeSecureUserResponse(newAuthor[0]))
+              })
+            })
         } catch (error) {
           console.error(error.message)
         }
     }
   })
-  // const isTaken = []
-  // const checkUserKeys = ['name', 'email']
-  // [author.name, author.email].forEach((detail, i) => {
-  //   UserHelper.findAuthorByNameOrEmail(checkUserKeys[i], detail)
-  //   .then(user => {
-  //     if (user.length > 0) isTaken.push(requiredKeys[i])
-  //   })
-  //   .then(() => {
-  //     if (i === 2) 
-  //   })
-  // }
-  // .then(() => console.log('IT IS'))
-
-  // if (userIsTaken) {
-  //   response.status(422).json(`That ${userIsTaken.join(' and ')} is taken. Please try again`)
-  // } else {
-  // }
 })
 
 app.post('/api/v1/authors/login', async (request, response) => {
@@ -204,6 +190,12 @@ app.post('/api/v1/stories', (request, response) => {
   } else {
     response.status(422).json('Yer missin some info')
   }
+})
+
+app.post('/api/v1/stories/:id', (request, response) => {
+  //can we find the story?
+  //is the story complete?
+  //has an author's id been provided?
 })
 
 app.listen(app.get('port'), () => {
