@@ -176,17 +176,18 @@ app.get('/api/v1/stories/:id', (request, response) => {
 
 app.post('/api/v1/stories', (request, response) => {
   const storyInfo = request.body
-  const requiredKeys = ['title', 'story', 'prompt']
+  const requiredKeys = ['title', 'story', 'prompt', 'contributors']
 
   if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
     try {
       knex('stories')
         .insert({ 
           title: storyInfo.title, 
-          story: storyInfo.story, 
-          prompt: storyInfo.prompt
+          contributions: [storyInfo.contributions], 
+          prompt: storyInfo.prompt,
+          contributors: [storyInfo.contributors]
         })
-        .then(response => console.log(response))
+        .then(() => response.status(200).json('The story has been posted!'))
     } catch (error) {
       console.error(error.message)
     }
