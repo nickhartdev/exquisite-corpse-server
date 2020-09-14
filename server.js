@@ -72,7 +72,7 @@ app.get("/api/v1/authors/:id", async (request, response) => {
 app.post('/api/v1/authors', async (request, response) => {
   const author = request.body
   const requiredKeys = ['name', 'email', 'password']
-  
+
   if (requiredKeys.every((value) => Object.keys(author).includes(value))) {
     try {
       knex('authors')
@@ -116,14 +116,18 @@ const authenticateUser = (userAccount, attemptedPassword, response) => {
   }
 }
 
+const findAuthorByNameOrEmail = async (queryType, queryValue) => {
+  return knex('authors')
+    .groupBy('id')
+    .select()
+    .having(queryType, '=', queryValue)
+}
+
 app.post('/api/v1/authors/login', async (request, response) => {
   const login = checkLoginInfo(request.body)
   if (login.hasEnoughInfo) {
     try {
-      knex('authors')
-        .groupBy('id')
-        .select()
-        .having(login.userType, '=', request.body[login.userType])
+      findAuthorByNameOrEmail(login.userType, request.body[login.userType])
         .then(user => {
           if (user.length === 0) {
             return response.status(422).json('A user by that name was not found')
