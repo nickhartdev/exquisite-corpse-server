@@ -174,20 +174,24 @@ app.get('/api/v1/stories/:id', (request, response) => {
   }
 })
 
-app.post('/api/v1/stories', (request, response) => {
+app.post('/api/v1/stories', async (request, response) => {
   const storyInfo = request.body
   const requiredKeys = ['title', 'story', 'prompt', 'contributors']
 
   if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
     try {
-      knex('stories')
-        .insert({ 
-          title: storyInfo.title, 
-          contributions: [storyInfo.contributions], 
-          prompt: storyInfo.prompt,
-          contributors: [storyInfo.contributors]
-        })
-        .then(() => response.status(200).json('The story has been posted!'))
+      StoryHelper.findViableId().then(new_id => {
+        knex('stories')
+          .insert({ 
+            id: new_id,
+            title: storyInfo.title, 
+            contributions: [storyInfo.contributions], 
+            prompt: storyInfo.prompt,
+            contributors: [storyInfo.contributors]
+          })
+          .then(() => StoryHelper.findStory(new_id))
+          .then(story => response.status(200).json(story))
+      })
     } catch (error) {
       console.error(error.message)
     }

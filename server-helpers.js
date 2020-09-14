@@ -108,6 +108,18 @@ class PromptHelper {
 }
 
 class StoryHelper {
+
+  static findViableId = async () => {
+    return knex('stories')
+      .groupBy('id')
+      .select('id')
+      .then((stories) => {
+        const sortedIds = stories.sort((a, b) => b.id - a.id)
+        return sortedIds[0].id + 1
+      }
+      )
+  }
+
   static checkForProblems = (story) => {
     const requiredFields = ['contributions', 'contributors']
     const problems = []
