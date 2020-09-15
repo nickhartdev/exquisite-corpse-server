@@ -54,17 +54,21 @@ app.post('/api/v1/authors', async (request, response) => {
       .json(`That ${isTaken.join(' and ')} is taken, please try again`)
     } else {
         try {
-          knex('authors')
-            .insert({ 
-              name: author.name, 
-              email: author.email, 
-              password: author.password 
-            })
-            .then(() => {
-              UserHelper.findAuthorByNameOrEmail('name', author.name).then(newAuthor => {
-                response.status(200).json(UserHelper.makeSecureUserResponse(newAuthor[0]))
-              })
-            })
+          StoryHelper.findViableId('authors')
+            .then(newId => {
+              knex('authors')
+                .insert({ 
+                  id: newId,
+                  name: author.name, 
+                  email: author.email, 
+                  password: author.password 
+                })
+                .then(() => {
+                  UserHelper.findAuthorByUsername(author.name).then(newAuthor => {
+                    response.status(200).json(UserHelper.makeSecureUserResponse(newAuthor[0]))
+                  })
+                })
+            })  
         } catch (error) {
           console.error(error.message)
         }
@@ -76,7 +80,7 @@ app.post('/api/v1/authors/login', async (request, response) => {
   const login = UserHelper.checkLoginInfo(request.body)
   if (login.hasEnoughInfo) {
     try {
-      UserHelper.findAuthorByNameOrEmail(login.userType, request.body[login.userType])
+      UserHelper.findAuthorByUsername(login.username)
         .then(user => {
           if (user.length === 0) {
             return response.status(422).json('A user by that name was not found')
@@ -180,7 +184,7 @@ app.post('/api/v1/stories', async (request, response) => {
 
   if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
     try {
-      StoryHelper.findViableId().then(new_id => {
+      StoryHelper.findViableId('stories').then(new_id => {
         knex('stories')
           .insert({ 
             id: new_id,

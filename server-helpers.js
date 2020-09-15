@@ -17,7 +17,7 @@ class UserHelper {
     }
   }
 
- static makeSecureUserResponse = ({
+  static makeSecureUserResponse = ({
     id,
     name,
     email,
@@ -37,14 +37,14 @@ class UserHelper {
 
   static checkLoginInfo = (info) => {
     const infoProvided = Object.keys(info)
-    const result = { hasEnoughInfo: false, message: '', userType: ''}
+    const result = { hasEnoughInfo: false, message: '', username: '' }
     if (!infoProvided.includes("password")) {
       result.message = 'You need to provide a password'
-    } else if (!infoProvided.some(info => ["email", "name"].includes(info))) {
+    } else if (infoProvided.length === 0 && infoProvided[0] === 'password') {
       result.message = 'Please provide a username or an email to login'
     } else {
-      result.userType = infoProvided.includes('name') ? 'name' : 'email' 
       result.hasEnoughInfo = true
+      result.username = info.username
     }
     return result
   }
@@ -61,11 +61,14 @@ class UserHelper {
     }
   }
 
-  static findAuthorByNameOrEmail = async (queryType, queryValue) => {
+  static findAuthorByUsername = async username => {
+    let usernameType
+    usernameType = username.includes('@') ? 'email' : 'name'
+
     return knex('authors')
       .groupBy('id')
       .select()
-      .having(queryType, '=', queryValue)
+      .having(usernameType, '=', username)
   }
 
   static userIsTaken = async (author) => {
@@ -73,7 +76,7 @@ class UserHelper {
     const checkAgainst = ["name", "email"]
     const result = [name, email].reduce(async (isTaken, thing, i) => {
       const resolvedUsers = await Promise.resolve(isTaken)
-      return await this.findAuthorByNameOrEmail(checkAgainst[i], thing).then(user => {
+      return await this.findAuthorByUsername(thing).then(user => {
         return user.length > 0 ? resolvedUsers.concat(checkAgainst[i]) : resolvedUsers
       })
     }, [])
@@ -109,15 +112,15 @@ class PromptHelper {
 
 class StoryHelper {
 
-  static findViableId = async () => {
-    return knex('stories')
+  static findViableId = async table => {
+    return knex(table)
       .groupBy('id')
       .select('id')
-      .then((stories) => {
-        const sortedIds = stories.sort((a, b) => b.id - a.id)
+      .then((data) => {
+        const sortedIds = data.sort((a, b) => b.id - a.id)
         return sortedIds[0].id + 1
       }
-      )
+    )
   }
 
   static checkForProblems = (story) => {
