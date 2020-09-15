@@ -180,7 +180,7 @@ app.get('/api/v1/stories/:id', (request, response) => {
 
 app.post('/api/v1/stories', async (request, response) => {
   const storyInfo = request.body
-  const requiredKeys = ['title', 'story', 'prompt', 'contributors']
+  const requiredKeys = ['title', 'contributions', 'prompt', 'contributors']
 
   if (requiredKeys.every(key => Object.keys(storyInfo).includes(key))) {
     try {
