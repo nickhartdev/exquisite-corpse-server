@@ -114,7 +114,10 @@ app.patch('/api/v1/authors/:id', async (request, response) => {
               .update({ [detail]: request.body[detail] })
               .then(() => {
                 i === info.length - 1
-                  && response.status(200).json('Your account has been updated!')
+                  && UserHelper.findAuthorById(request.params.id)
+                    .then(author => {
+                      response.status(200).json(author)
+                    })
               })
             })
         } catch (error) {
