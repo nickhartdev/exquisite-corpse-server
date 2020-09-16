@@ -4,7 +4,6 @@ module.exports = {
   development: {
     client: "pg",
     connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
-    //environmental variables - dotenv // library for managing variables
     migrations: {
       directory: "./db/migrations",
     },

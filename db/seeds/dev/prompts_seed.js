@@ -17,7 +17,7 @@ exports.seed = function(knex) {
         },
         {
           id: 3,
-          prompt: "The president is a really nice guy",
+          prompt: "The president is a really nice guy (maybe too nice) and he calls you daily",
           genre: "satire",
         },
         {

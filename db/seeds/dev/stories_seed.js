@@ -89,7 +89,7 @@ exports.seed = function (knex) {
           deepened as she dropped her human form, revealing the much larger terrifying creature that she truly was underneath`
           ],
           contributors: [3, 5, 2],
-          is_complete: true,
+          is_complete: false,
         },
         {
           id: 4,
