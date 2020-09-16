@@ -8,9 +8,9 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema
-    .dropTable("stories")
-    .dropTable("prompts")
-    .dropTable("authors")
-    .dropTable("story_authors");
+  return knex.schema.table('stories', function(table) {
+    table.dropColumn("contributions")
+    table.dropColumn("contributors")
+    table.string('story')
+  })
 };
