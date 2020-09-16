@@ -5,7 +5,7 @@ exports.seed = function (knex) {
       return knex("authors").insert([
         {
           id: 1,
-          name: "Carly Clift",
+          name: "carly",
           email: "thefirstqueenofscottsdale@scottlsdale.gov",
           created_at: "2020-01-11T00:25:34.315Z",
           updated_at: "2020-04-11T00:25:34.315Z",
@@ -14,7 +14,7 @@ exports.seed = function (knex) {
         },
         {
           id: 2,
-          name: "Aaron Burris-DeBoskey",
+          name: "aaron",
           email: "rontron@tron.ron",
           created_at: "2020-01-11T00:25:34.315Z",
           updated_at: "2020-06-11T00:25:34.315Z",
@@ -23,7 +23,7 @@ exports.seed = function (knex) {
         },
         {
           id: 3,
-          name: `Nick Hart`,
+          name: `nick`,
           email: "bladesofglory@at.at",
           created_at: "2020-05-11T00:25:34.315Z",
           updated_at: "2020-06-11T00:25:34.315Z",
@@ -32,7 +32,7 @@ exports.seed = function (knex) {
         },
         {
           id: 4,
-          name: "Greyson Elkins",
+          name: "greyson",
           email: "theNews@5",
           created_at: "2020-02-11T00:25:34.315Z",
           updated_at: "2020-06-11T00:25:34.315Z",
@@ -41,7 +41,7 @@ exports.seed = function (knex) {
         },
         {
           id: 5,
-          name: "Khalid Williams",
+          name: "khalid",
           email: "theboss@turing.com.com",
           created_at: "2020-05-11T00:25:34.315Z",
           updated_at: "2020-06-11T00:25:34.315Z",
@@ -51,7 +51,7 @@ exports.seed = function (knex) {
         },
         {
           id: 6,
-          name: "Casey Dallavalle",
+          name: "casey",
           email: "theceo@turing.net.net",
           created_at: "2020-05-11T00:25:34.315Z",
           updated_at: "2020-06-11T00:25:34.315Z",
