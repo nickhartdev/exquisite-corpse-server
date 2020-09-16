@@ -3,7 +3,7 @@ require('dotenv').config()
 module.exports = {
   development: {
     client: "pg",
-    connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
+    connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite`,
     migrations: {
       directory: "./db/migrations",
     },
