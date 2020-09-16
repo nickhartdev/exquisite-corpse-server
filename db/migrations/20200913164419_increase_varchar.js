@@ -5,8 +5,8 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTable('stories')
+    .dropTable('story_authors')
     .dropTable('prompts')
     .dropTable('authors')
-    .dropTable('story_authors')
+    .dropTable('stories')
 }
