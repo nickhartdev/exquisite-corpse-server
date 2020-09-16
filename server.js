@@ -1,8 +1,9 @@
 require('dotenv').config()
 
-import express, { response } from 'express'
-import cors from 'cors'
-import { UserHelper, PromptHelper, StoryHelper } from './server-helpers'
+const express = require('express')
+const cors = require('cors')
+const { UserHelper, PromptHelper, StoryHelper } = require('./server-helpers.js')
+// import { UserHelper, PromptHelper, StoryHelper } from './server-helpers'
 
 const app = express()
 const knex = require('knex')({
