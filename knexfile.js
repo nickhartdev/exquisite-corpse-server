@@ -5,7 +5,7 @@ module.exports = {
     client: "pg",
     connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
     migrations: {
-      directory: "./db/migrations",
+      directory: "./db/promigrations",
     },
     seeds: {
       directory: "./db/seeds/dev"
