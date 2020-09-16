@@ -11,7 +11,7 @@ const {
 const app = express();
 const knex = require("knex")({
   client: "pg",
-  // connection: process.env.DATABASE_URL,
+  connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`
   // connection: process.env.DATABASE_URL,
 });
 
