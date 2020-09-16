@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-  return knex.schema.table("stories", (table) => {
+  return knex.schema.table("stories", function(table) {
     table.boolean('is_complete').defaultTo(0)
   });
 };

@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-  return knex.schema.table('authors', table => {
+  return knex.schema.table('authors', function(table) {
     table.string('bio')
   })
 };
