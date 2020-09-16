@@ -1,4 +1,4 @@
-# Exquisite Corpse Back-end
+# Exquisite Corpse
 
  Exquisite Corpse is a collaborative creative writing game. Participants take turns writing a story, and pass their last sentence as a a prompt to the next contributor. The result is a fun and unpredictable collection of ideas and writing styles that form very unique bodies of text.
 
