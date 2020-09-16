@@ -13,4 +13,8 @@ exports.down = function(knex) {
   //     // table.foreign("author_id").references("authors.id");
   //     // table.timestamps(true, true);
   //   })
+  return knex.schema
+    .createTable('prompts', function(table) {})
+    .createTable('authors', function(table) {})
+    .createTable('stories', function(table) {})
 };
