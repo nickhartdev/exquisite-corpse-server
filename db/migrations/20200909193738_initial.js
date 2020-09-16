@@ -21,18 +21,18 @@ exports.up = function(knex) {
       table.string("password");
       table.timestamps(true, true);
     })
-    .createTable("story_authors", function (table) {
-      table.integer("story_id");
-      table.foreign("story_id").references("stories.id");
-      table.integer("author_id");
-      table.foreign("author_id").references("authors.id");
-      table.timestamps(true, true);
-    });
+    // .createTable("story_authors", function (table) {
+    //   table.integer("story_id");
+    //   table.foreign("story_id").references("stories.id");
+    //   table.integer("author_id");
+    //   table.foreign("author_id").references("authors.id");
+    //   table.timestamps(true, true);
+    // });
 };
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTable('story_authors')
+    // .dropTable('story_authors')
     .dropTable('prompts')
     .dropTable('authors')
     .dropTable('stories')
