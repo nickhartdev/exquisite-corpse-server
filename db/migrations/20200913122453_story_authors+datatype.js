@@ -11,6 +11,6 @@ exports.down = function(knex) {
   return knex.schema.table('stories', function(table) {
     table.dropColumn("contributions")
     table.dropColumn("contributors")
-    table.string('story')
+    table.string("story")
   })
 };
