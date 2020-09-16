@@ -6,7 +6,7 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.table('authors', function(table) {
-    table.dropColumn("bio")
-  })
+  // return knex.schema.table('authors', function(table) {
+  //   table.dropColumn("bio")
+  // })
 };

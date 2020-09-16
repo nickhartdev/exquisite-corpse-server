@@ -8,7 +8,7 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.table('prompt', function(table) {
-    table.foreign('prompt')
-  })
+  // return knex.schema.table('prompt', function(table) {
+  //   table.foreign('prompt')
+  // })
 };
