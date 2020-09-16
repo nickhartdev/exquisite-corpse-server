@@ -184,4 +184,4 @@ class StoryHelper {
   }
 }
 
-export { UserHelper, PromptHelper, StoryHelper }
+module.exports = { UserHelper, PromptHelper, StoryHelper };
