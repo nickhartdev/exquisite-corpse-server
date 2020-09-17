@@ -119,7 +119,7 @@ class StoryHelper {
       .select('id')
       .then((data) => {
         const sortedIds = data.sort((a, b) => b.id - a.id)
-        return sortedIds[0].id + 1
+        return sortedIds.length > 0 ? sortedIds[0].id + 1: 1;
       }
     )
   }
