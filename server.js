@@ -19,7 +19,7 @@ const knex = require("knex")({
 app.use(express.json());
 app.use(cors());
 app.use(function (request, response) {
-  response.header("Access-Control-Allow-Origin", "exquisite-corpse-2005fe.herokuapp.com/"); // update to match the domain you will make the request from
+  response.header("Access-Control-Allow-Origin", *); // update to match the domain you will make the request from
   response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 })
 
