@@ -27,7 +27,7 @@ app.use(function (request, response, next) {
 app.set("port", process.env.PORT || 3005);
 app.locals.title = "The Exquisite Corpse server";
 //AUTHORS AND USERS
-app.get("/api/v2/authors", async (request, response) => {
+app.get("/api/v2/authors", async (request, response, next) => {
   try {
     knex
       .select()
@@ -43,7 +43,7 @@ app.get("/api/v2/authors", async (request, response) => {
   }
 });
 
-app.get("/api/v2/authors/:id", async (request, response) => {
+app.get("/api/v2/authors/:id", async (request, response, next) => {
   UserHelper.findAuthorById(request.params.id).then((author) => {
     if (author.length === 1) {
       response.status(200).json(UserHelper.makeSecureUserResponse(author[0]));
@@ -59,7 +59,7 @@ app.get("/api/v2/authors/:id", async (request, response) => {
   });
 });
 
-app.post("/api/v2/authors", async (request, response) => {
+app.post("/api/v2/authors", async (request, response, next) => {
   const author = request.body;
   const requiredKeys = ["name", "email", "password"];
   if (!Object.keys(author).every((detail) => requiredKeys.includes(detail))) {
@@ -95,7 +95,7 @@ app.post("/api/v2/authors", async (request, response) => {
   });
 });
 
-app.post("/api/v2/authors/login", async (request, response) => {
+app.post("/api/v2/authors/login", async (request, response, next) => {
   const login = UserHelper.checkLoginInfo(request.body);
   if (login.hasEnoughInfo) {
     try {
@@ -118,7 +118,7 @@ app.post("/api/v2/authors/login", async (request, response) => {
   }
 });
 
-app.patch("/api/v2/authors/:id", async (request, response) => {
+app.patch("/api/v2/authors/:id", async (request, response, next) => {
   const info = Object.keys(request.body);
   const acceptableUpdates = ["email", "password", "bio"];
   const getAuthor = () => knex("authors").where({ id: request.params.id });
@@ -151,7 +151,7 @@ app.patch("/api/v2/authors/:id", async (request, response) => {
   });
 });
 // PROMPTS
-app.get("/api/v2/prompts", async (request, response) => {
+app.get("/api/v2/prompts", async (request, response, next) => {
   try {
     knex("prompts")
       .select()
@@ -163,7 +163,7 @@ app.get("/api/v2/prompts", async (request, response) => {
   }
 });
 
-app.get("/api/v2/prompts/:detail", async (request, response) => {
+app.get("/api/v2/prompts/:detail", async (request, response, next) => {
   try {
     const detail = request.params.detail;
     let prompt;
@@ -182,7 +182,7 @@ app.get("/api/v2/prompts/:detail", async (request, response) => {
   }
 });
 //STORIES
-app.get("/api/v2/stories", (request, response) => {
+app.get("/api/v2/stories", (request, response, next) => {
   try {
     knex("stories")
       .select()
@@ -192,7 +192,7 @@ app.get("/api/v2/stories", (request, response) => {
   }
 });
 
-app.get("/api/v2/stories/:id", (request, response) => {
+app.get("/api/v2/stories/:id", (request, response, next) => {
   try {
     knex("stories")
       .groupBy("id")
@@ -206,7 +206,7 @@ app.get("/api/v2/stories/:id", (request, response) => {
   }
 });
 
-app.post("/api/v2/stories", async (request, response) => {
+app.post("/api/v2/stories", async (request, response, next) => {
   const storyInfo = request.body;
   const requiredKeys = ["title", "contributions", "prompt", "contributors"];
 
@@ -232,7 +232,7 @@ app.post("/api/v2/stories", async (request, response) => {
   }
 });
 
-app.patch("/api/v2/stories/:id", (request, response) => {
+app.patch("/api/v2/stories/:id", (request, response, next) => {
   const story_id = request.params.id;
   StoryHelper.findStory(story_id).then((story) => {
     const problems = StoryHelper.checkForProblems(request.body);
