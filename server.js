@@ -17,7 +17,7 @@ const knex = require("knex")({
 });
 
 app.use(express.json());
-app.use(cors({ origin: 'https://exquisite-corpse-2005fe.herokuapp.com' }));
+app.use(cors({ Origin: 'https://exquisite-corpse-2005fe.herokuapp.com' }));
 // app.use(function (request, response, next) {
 //   response.header("Access-Control-Allow-Origin", 'https://exquisite-corpse-2005fe.herokuapp.com'); // update to match the domain you will make the request from
 //   response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -52,6 +52,7 @@ app.get("/api/v2/authors/:id", async (request, response, next) => {
     } else {
       response
         .status(500)
+        .header('Access-Control-Allow-Origin', '*')
         .json(
           `Something's horribly wrong, the server has more than one author with that id`
         );
@@ -84,6 +85,7 @@ app.post("/api/v2/authors", async (request, response, next) => {
               UserHelper.findAuthorByUsername(author.name).then((newAuthor) => {
                 response
                   .status(200)
+                  .header('Access-Control-Allow-Origin', '*')
                   .json(UserHelper.makeSecureUserResponse(newAuthor[0]));
               });
             });
@@ -101,7 +103,7 @@ app.post("/api/v2/authors/login", async (request, response, next) => {
     try {
       UserHelper.findAuthorByUsername(login.username).then((user) => {
         if (user.length === 0) {
-          return response.status(422).json("A user by that name was not found");
+          return response.status(422).header('Access-Control-Allow-Origin', '*').json("A user by that name was not found");
         } else {
           return UserHelper.authenticateUser(
             user,
@@ -114,7 +116,7 @@ app.post("/api/v2/authors/login", async (request, response, next) => {
       console.error(error.message);
     }
   } else {
-    response.status(422).json(login.message);
+    response.status(422).header('Access-Control-Allow-Origin', '*').json(login.message);
   }
 });
 
@@ -124,12 +126,12 @@ app.patch("/api/v2/authors/:id", async (request, response, next) => {
   const getAuthor = () => knex("authors").where({ id: request.params.id });
   return UserHelper.findAuthorById(request.params.id).then((author) => {
     if (author.length === 0) {
-      return response.status(404).json(`There is not a user with that id`);
+      return response.status(404).header('Access-Control-Allow-Origin', '*').json(`There is not a user with that id`);
     } else if (
       info.some((detail) => acceptableUpdates.includes(detail) === false)
     ) {
       return response
-        .status(422)
+        .status(422).header('Access-Control-Allow-Origin', '*')
         .json(`You can only update email, password, or bio`);
     } else {
       try {
@@ -140,7 +142,7 @@ app.patch("/api/v2/authors/:id", async (request, response, next) => {
             .then(() => {
               i === info.length - 1 &&
                 UserHelper.findAuthorById(request.params.id).then((author) => {
-                  response.status(200).json(author);
+                  response.status(200).header('Access-Control-Allow-Origin', '*').json(author);
                 });
             });
         });
@@ -156,7 +158,7 @@ app.get("/api/v2/prompts", async (request, response, next) => {
     knex("prompts")
       .select()
       .then((prompts) => {
-        response.status(200).json(prompts);
+        response.status(200).header('Access-Control-Allow-Origin', '*').json(prompts);
       });
   } catch (error) {
     console.error(error);
@@ -176,7 +178,7 @@ app.get("/api/v2/prompts/:detail", async (request, response, next) => {
         prompt = specificPrompt;
       });
     }
-    response.status(200).json(prompt);
+    response.status(200).header('Access-Control-Allow-Origin', '*').json(prompt);
   } catch (error) {
     console.error(error);
   }
@@ -186,7 +188,7 @@ app.get("/api/v2/stories", (request, response, next) => {
   try {
     knex("stories")
       .select()
-      .then((stories) => response.status(200).json(stories));
+      .then((stories) => response.status(200).header('Access-Control-Allow-Origin', '*').json(stories));
   } catch (error) {
     console.error(error.message);
   }
@@ -199,7 +201,7 @@ app.get("/api/v2/stories/:id", (request, response, next) => {
       .select()
       .having("id", "=", request.params.id)
       .then((story) => {
-        return response.status(200).json(story);
+        return response.status(200).header('Access-Control-Allow-Origin', '*').json(story);
       });
   } catch (error) {
     console.error(error.message);
@@ -222,13 +224,13 @@ app.post("/api/v2/stories", async (request, response, next) => {
             contributors: [storyInfo.contributors],
           })
           .then(() => StoryHelper.findStory(new_id))
-          .then((story) => response.status(200).json(story));
+          .then((story) => response.status(200).header('Access-Control-Allow-Origin', '*').json(story));
       });
     } catch (error) {
       console.error(error.message);
     }
   } else {
-    response.status(422).json("Yer missin some info");
+    response.status(422).header('Access-Control-Allow-Origin', '*').json("Yer missin some info");
   }
 });
 
@@ -237,13 +239,13 @@ app.patch("/api/v2/stories/:id", (request, response, next) => {
   StoryHelper.findStory(story_id).then((story) => {
     const problems = StoryHelper.checkForProblems(request.body);
     if (story.length === 0) {
-      response.status(404).json("The story was not found");
+      response.status(404).header('Access-Control-Allow-Origin', '*').json("The story was not found");
     } else if (story[0].is_complete === true) {
       response
-        .status(422)
+        .status(422).header('Access-Control-Allow-Origin', '*')
         .json(`The story is finished, you can't write more here`);
     } else if (problems.length > 0) {
-      response.status(422).json(problems.join(" "));
+      response.status(422).header('Access-Control-Allow-Origin', '*').json(problems.join(" "));
     } else {
       StoryHelper.updateStory(request.body, story[0], response);
     }
