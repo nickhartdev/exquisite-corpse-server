@@ -23,16 +23,16 @@ const knex = require("knex")({
 
 app.use(express.json());
 app.use(cors());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.append("Access-Control-Allow-Origin", "*");
+//   res.append("Access-Control-Allow-Credentials", true);
+//   res.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+//   res.append(
+//     "Access-Control-Allow-Headers",
+//     "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
+//   );
+//   next();
+// });
 
 app.set("port", process.env.PORT || 3005);
 console.log('ENV.PORT', process.env.PORT)
@@ -58,13 +58,13 @@ app.get("/api/v2/authors/:id", async (request, response, next) => {
   try {
     UserHelper.findAuthorById(request.params.id).then((author) => {
       if (author.length === 1) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(200).json(UserHelper.makeSecureUserResponse(author[0]));
       } else if (author.length === 0) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(404).json("Author not found");
       } else {
-        response.header('Access-Control-Allow-Origin', '*')
+        response.append('Access-Control-Allow-Origin', '*')
         response
           .status(500)
           .json(
@@ -81,13 +81,13 @@ app.post("/api/v2/authors", async (request, response, next) => {
   const author = request.body;
   const requiredKeys = ["name", "email", "password"];
   if (!Object.keys(author).every((detail) => requiredKeys.includes(detail))) {
-    response.header("Access-Control-Allow-Origin", "*")
+    response.append("Access-Control-Allow-Origin", "*")
     response.status(422).json("Please include a name, email, and password");
   }
   UserHelper.userIsTaken(author).then((isTaken) => {
     if (isTaken.length > 0) {
       try {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response
           .status(422)
           .json(`That ${isTaken.join(" and ")} is taken, please try again`);
@@ -106,7 +106,7 @@ app.post("/api/v2/authors", async (request, response, next) => {
             })
             .then(() => {
               UserHelper.findAuthorByUsername(author.name).then((newAuthor) => {
-                response.header("Access-Control-Allow-Origin", "*");
+                response.append("Access-Control-Allow-Origin", "*");
                 response
                   .status(200)
                   .set('Access-Control-Allow-Origin', '*')
@@ -127,7 +127,7 @@ app.post("/api/v2/authors/login", async (request, response, next) => {
     try {
       UserHelper.findAuthorByUsername(login.username).then((user) => {
         if (user.length === 0) {
-          response.header("Access-Control-Allow-Origin", "*");
+          response.append("Access-Control-Allow-Origin", "*");
           return response.status(422).json("A user by that name was not found");
         } else {
           return UserHelper.authenticateUser(
@@ -142,7 +142,7 @@ app.post("/api/v2/authors/login", async (request, response, next) => {
     }
   } else {
     try {
-      response.header("Access-Control-Allow-Origin", "*");
+      response.append("Access-Control-Allow-Origin", "*");
       response.status(422).json(login.message);
     } catch (error) {
       console.error(error.message);
@@ -157,12 +157,12 @@ app.patch("/api/v2/authors/:id", async (request, response, next) => {
   return UserHelper.findAuthorById(request.params.id).then((author) => {
     try {
       if (author.length === 0) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         return response.status(404).json(`There is not a user with that id`);
       } else if (
         info.some((detail) => acceptableUpdates.includes(detail) === false)
       ) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         return response
           .status(422)
           .json(`You can only update email, password, or bio`);
@@ -176,7 +176,7 @@ app.patch("/api/v2/authors/:id", async (request, response, next) => {
                 i === info.length - 1 &&
                   UserHelper.findAuthorById(request.params.id).then(
                     (author) => {
-                      response.header("Access-Control-Allow-Origin", "*");
+                      response.append("Access-Control-Allow-Origin", "*");
                       response.status(200).json(author);
                     }
                   );
@@ -197,7 +197,7 @@ app.get("/api/v2/prompts", async (request, response, next) => {
     knex("prompts")
       .select()
       .then((prompts) => {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(200).json(prompts);
       });
   } catch (error) {
@@ -218,7 +218,7 @@ app.get("/api/v2/prompts/:detail", async (request, response, next) => {
         prompt = specificPrompt;
       });
     }
-    response.header("Access-Control-Allow-Origin", "*");
+    response.append("Access-Control-Allow-Origin", "*");
     response.status(200).json(prompt);
   } catch (error) {
     console.error(error);
@@ -230,7 +230,7 @@ app.get("/api/v2/stories", (request, response, next) => {
     knex("stories")
       .select()
       .then((stories) => {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(200).json(stories)
       })
         
@@ -246,7 +246,7 @@ app.get("/api/v2/stories/:id", (request, response, next) => {
       .select()
       .having("id", "=", request.params.id)
       .then((story) => {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         return response.status(200).json(story);
       });
   } catch (error) {
@@ -271,7 +271,7 @@ app.post("/api/v2/stories", async (request, response, next) => {
           })
           .then(() => StoryHelper.findStory(new_id))
           .then((story) => {
-            response.header("Access-Control-Allow-Origin", "*");
+            response.append("Access-Control-Allow-Origin", "*");
             response.status(200).set('Access-Control-Allow-Origin', '*').json(story)
           });
       });
@@ -289,15 +289,15 @@ app.patch("/api/v2/stories/:id", (request, response, next) => {
     const problems = StoryHelper.checkForProblems(request.body);
     try {
       if (story.length === 0) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(404).json("The story was not found");
       } else if (story[0].is_complete === true) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response
           .status(422)
           .json(`The story is finished, you can't write more here`);
       } else if (problems.length > 0) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         response.status(422).json(problems.join(" "));
       } else {
         StoryHelper.updateStory(request.body, story[0], response);

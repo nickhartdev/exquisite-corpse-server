@@ -52,10 +52,10 @@ class UserHelper {
   static authenticateUser = (userAccount, attemptedPassword, response) => {
     try {
       if (userAccount[0].password === attemptedPassword) {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         return response.status(200).json(this.makeSecureUserResponse(userAccount[0]))
       } else {
-        response.header("Access-Control-Allow-Origin", "*");
+        response.append("Access-Control-Allow-Origin", "*");
         return response.status(422).json('An incorrect password was provided!')
       }
     } catch (error) {
@@ -192,7 +192,7 @@ class StoryHelper {
           })
           .then(() => {
             this.findStory(oldStory.id).then(story => {
-              response.header("Access-Control-Allow-Origin", "*");
+              response.append("Access-Control-Allow-Origin", "*");
               response.status(200).json(story)
             })
           })
