@@ -50,22 +50,26 @@ app.get("/api/v2/authors", async (request, response, next) => {
 });
 
 app.get("/api/v2/authors/:id", async (request, response, next) => {
-  UserHelper.findAuthorById(request.params.id).then((author) => {
-    if (author.length === 1) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response.status(200).json(UserHelper.makeSecureUserResponse(author[0]));
-    } else if (author.length === 0) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response.status(404).json("Author not found");
-    } else {
-      response.header('Access-Control-Allow-Origin', '*')
-      response
-        .status(500)
-        .json(
-          `Something's horribly wrong, the server has more than one author with that id`
-        );
-    }
-  });
+  try {
+    UserHelper.findAuthorById(request.params.id).then((author) => {
+      if (author.length === 1) {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.status(200).json(UserHelper.makeSecureUserResponse(author[0]));
+      } else if (author.length === 0) {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.status(404).json("Author not found");
+      } else {
+        response.header('Access-Control-Allow-Origin', '*')
+        response
+          .status(500)
+          .json(
+            `Something's horribly wrong, the server has more than one author with that id`
+          );
+      }
+    });
+  } catch (error) {
+    console.error(error.message)
+  }
 });
 
 app.post("/api/v2/authors", async (request, response, next) => {
@@ -77,10 +81,14 @@ app.post("/api/v2/authors", async (request, response, next) => {
   }
   UserHelper.userIsTaken(author).then((isTaken) => {
     if (isTaken.length > 0) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response
-        .status(422)
-        .json(`That ${isTaken.join(" and ")} is taken, please try again`);
+      try {
+        response.header("Access-Control-Allow-Origin", "*");
+        response
+          .status(422)
+          .json(`That ${isTaken.join(" and ")} is taken, please try again`);
+      } catch (error) {
+        console.error(error.message);
+      }
     } else {
       try {
         StoryHelper.findViableId("authors").then((newId) => {
@@ -128,8 +136,12 @@ app.post("/api/v2/authors/login", async (request, response, next) => {
       console.error(error.message);
     }
   } else {
-    response.header("Access-Control-Allow-Origin", "*");
-    response.status(422).json(login.message);
+    try {
+      response.header("Access-Control-Allow-Origin", "*");
+      response.status(422).json(login.message);
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 });
 
@@ -138,33 +150,39 @@ app.patch("/api/v2/authors/:id", async (request, response, next) => {
   const acceptableUpdates = ["email", "password", "bio"];
   const getAuthor = () => knex("authors").where({ id: request.params.id });
   return UserHelper.findAuthorById(request.params.id).then((author) => {
-    if (author.length === 0) {
-      response.header("Access-Control-Allow-Origin", "*");
-      return response.status(404).json(`There is not a user with that id`);
-    } else if (
-      info.some((detail) => acceptableUpdates.includes(detail) === false)
-    ) {
-      response.header("Access-Control-Allow-Origin", "*");
-      return response
-        .status(422)
-        .json(`You can only update email, password, or bio`);
-    } else {
-      try {
-        info.forEach(async (detail, i) => {
-          knex("authors")
-            .where({ id: request.params.id })
-            .update({ [detail]: request.body[detail] })
-            .then(() => {
-              i === info.length - 1 &&
-                UserHelper.findAuthorById(request.params.id).then((author) => {
-                  response.header("Access-Control-Allow-Origin", "*");
-                  response.status(200).json(author);
-                });
-            });
-        });
-      } catch (error) {
-        console.error(error.message);
+    try {
+      if (author.length === 0) {
+        response.header("Access-Control-Allow-Origin", "*");
+        return response.status(404).json(`There is not a user with that id`);
+      } else if (
+        info.some((detail) => acceptableUpdates.includes(detail) === false)
+      ) {
+        response.header("Access-Control-Allow-Origin", "*");
+        return response
+          .status(422)
+          .json(`You can only update email, password, or bio`);
+      } else {
+        try {
+          info.forEach(async (detail, i) => {
+            knex("authors")
+              .where({ id: request.params.id })
+              .update({ [detail]: request.body[detail] })
+              .then(() => {
+                i === info.length - 1 &&
+                  UserHelper.findAuthorById(request.params.id).then(
+                    (author) => {
+                      response.header("Access-Control-Allow-Origin", "*");
+                      response.status(200).json(author);
+                    }
+                  );
+              });
+          });
+        } catch (error) {
+          console.error(error.message);
+        }
       }
+    } catch (error) {
+      console.error(error.message);
     }
   });
 });
@@ -264,19 +282,23 @@ app.patch("/api/v2/stories/:id", (request, response, next) => {
   const story_id = request.params.id;
   StoryHelper.findStory(story_id).then((story) => {
     const problems = StoryHelper.checkForProblems(request.body);
-    if (story.length === 0) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response.status(404).json("The story was not found");
-    } else if (story[0].is_complete === true) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response
-        .status(422)
-        .json(`The story is finished, you can't write more here`);
-    } else if (problems.length > 0) {
-      response.header("Access-Control-Allow-Origin", "*");
-      response.status(422).json(problems.join(" "));
-    } else {
-      StoryHelper.updateStory(request.body, story[0], response);
+    try {
+      if (story.length === 0) {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.status(404).json("The story was not found");
+      } else if (story[0].is_complete === true) {
+        response.header("Access-Control-Allow-Origin", "*");
+        response
+          .status(422)
+          .json(`The story is finished, you can't write more here`);
+      } else if (problems.length > 0) {
+        response.header("Access-Control-Allow-Origin", "*");
+        response.status(422).json(problems.join(" "));
+      } else {
+        StoryHelper.updateStory(request.body, story[0], response);
+      }
+    } catch (error) {
+      console.error(error.message);
     }
   });
 });

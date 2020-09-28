@@ -66,23 +66,32 @@ class UserHelper {
   static findAuthorByUsername = async username => {
     let usernameType
     usernameType = username.includes('@') ? 'email' : 'name'
-
-    return knex('authors')
-      .groupBy('id')
-      .select()
-      .having(usernameType, '=', username)
+    try {
+      return knex("authors")
+        .groupBy("id")
+        .select()
+        .having(usernameType, "=", username);
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   static userIsTaken = async (author) => {
     const { name, email } = author 
     const checkAgainst = ["name", "email"]
-    const result = [name, email].reduce(async (isTaken, thing, i) => {
-      const resolvedUsers = await Promise.resolve(isTaken)
-      return await this.findAuthorByUsername(thing).then(user => {
-        return user.length > 0 ? resolvedUsers.concat(checkAgainst[i]) : resolvedUsers
-      })
-    }, [])
-    return await result
+    try {
+      const result = [name, email].reduce(async (isTaken, thing, i) => {
+        const resolvedUsers = await Promise.resolve(isTaken);
+        return await this.findAuthorByUsername(thing).then((user) => {
+          return user.length > 0
+            ? resolvedUsers.concat(checkAgainst[i])
+            : resolvedUsers;
+        });
+      }, []);
+      return await result;
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
 }
@@ -106,24 +115,28 @@ class PromptHelper {
   }
 
   static findSpecificPrompt = (id) => {
-    return knex("prompts")
-      .groupBy("id")
-      .select()
-      .having("id", "=", id)
+    try {
+      return knex("prompts").groupBy("id").select().having("id", "=", id);
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 }
 
 class StoryHelper {
 
   static findViableId = async table => {
-    return knex(table)
-      .groupBy('id')
-      .select('id')
-      .then((data) => {
-        const sortedIds = data.sort((a, b) => b.id - a.id)
-        return sortedIds.length > 0 ? sortedIds[0].id + 1: 1;
-      }
-    )
+    try {
+      return knex(table)
+        .groupBy("id")
+        .select("id")
+        .then((data) => {
+          const sortedIds = data.sort((a, b) => b.id - a.id);
+          return sortedIds.length > 0 ? sortedIds[0].id + 1 : 1;
+        });
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   static checkForProblems = (story) => {
