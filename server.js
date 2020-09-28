@@ -13,11 +13,14 @@ const app = express();
 const knex = require("knex")({
   client: "pg",
   // connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`
-  connection: process.env.DATABASE_URL,
+  connection:
+    process.env.DATABASE_URL ||
+    `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite`,
 });
 
 app.use(express.json());
-app.use(cors({ Origin: 'https://exquisite-corpse-2005fe.herokuapp.com' }));
+// app.use(cors({ Origin: 'https://exquisite-corpse-2005fe.herokuapp.com' }));
+app.use(cors());
 // app.use(function (request, response, next) {
 //   response.header("Access-Control-Allow-Origin", 'https://exquisite-corpse-2005fe.herokuapp.com'); // update to match the domain you will make the request from
 //   response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
