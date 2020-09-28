@@ -1,6 +1,6 @@
 # Exquisite Corpse
 
- Exquisite Corpse is a collaborative creative writing game. Participants take turns writing a story, and pass their last sentence as a a prompt to the next contributor. The result is a fun and unpredictable collection of ideas and writing styles that form very unique bodies of text.
+ [Exquisite Corpse](https://exquisite-corpse-2005fe.herokuapp.com/) is a collaborative creative writing game. Participants take turns writing a story, and pass their last sentence as a a prompt to the next contributor. The result is a fun and unpredictable collection of ideas and writing styles that form very unique bodies of text.
 
  Users of Exquisite Corpse are able to:
  * Read published (completed) stories.
