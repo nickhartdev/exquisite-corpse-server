@@ -2,7 +2,9 @@ require("dotenv").config();
 
 const knex = require("knex")({
   client: "pg",
-  connection: `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite_data`,
+  connection:
+    process.env.DATABASE_URL ||
+    `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite`,
 });
 
 class UserHelper {
@@ -52,10 +54,10 @@ class UserHelper {
   static authenticateUser = (userAccount, attemptedPassword, response) => {
     try {
       if (userAccount[0].password === attemptedPassword) {
-        response.append("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Origin", "*");
         return response.status(200).json(this.makeSecureUserResponse(userAccount[0]))
       } else {
-        response.append("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Origin", "*");
         return response.status(422).json('An incorrect password was provided!')
       }
     } catch (error) {
@@ -192,7 +194,7 @@ class StoryHelper {
           })
           .then(() => {
             this.findStory(oldStory.id).then(story => {
-              response.append("Access-Control-Allow-Origin", "*");
+              response.header("Access-Control-Allow-Origin", "*");
               response.status(200).json(story)
             })
           })
