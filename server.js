@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const environment = process.env.NODE_ENV || "development";
+            console.log('Node env', process.env.NODE_ENV)
 const express = require("express");
 const cors = require("cors");
 const {
@@ -16,6 +17,9 @@ const knex = require("knex")({
     process.env.DATABASE_URL ||
     `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost/exquisite`,
 });
+            console.log('Database_URL', process.env.DATABASE_URL)
+            console.log('DB_user', process.env.DB_USER)
+            console.log('DB_PASSWORD', process.env.DB_PASSWORD)
 
 app.use(express.json());
 app.use(cors());
@@ -31,6 +35,7 @@ app.use(function (req, res, next) {
 });
 
 app.set("port", process.env.PORT || 3005);
+console.log('ENV.PORT', process.env.PORT)
 app.locals.title = "The Exquisite Corpse server";
 //AUTHORS AND USERS
 app.get("/api/v2/authors", async (request, response, next) => {
